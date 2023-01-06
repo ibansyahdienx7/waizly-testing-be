@@ -55,7 +55,7 @@ return [
     */
 
     'url' => env('APP_URL', 'http://127.0.0.1:3199'),
-    'url_web' => 'http://127.0.0.1:3200',
+    'url_web' => 'http://127.0.0.1:3000',
     'brand' => 'Waizly - Testing Backend Developer',
 
     'asset_url' => env('ASSET_URL'),
