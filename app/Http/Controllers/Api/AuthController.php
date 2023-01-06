@@ -512,6 +512,136 @@ class AuthController extends Controller
         }
     }
 
+    public function checkCode()
+    {
+        try {
+            $code = request()->code;
+
+            $checkCode = PasswordReset::where('token', $code)->first();
+            if(empty($checkCode))
+            {
+                return response()->json([
+                    'retcode' => 404,
+                    'status' => false,
+                    'msg' => 'Token not found',
+                    'error' => 1
+                ], 404);
+            }
+
+            $one_days = date('Y-m-d H:i:s', strtotime('+1 days', strtotime($checkCode->created_at)));
+            $date = now();
+
+            if ($date > $one_days) {
+                return response()->json([
+                    'retcode' => 417,
+                    'status' => false,
+                    'msg' => 'The token has expired',
+                    'error' => 1
+                ], 417);
+            }
+
+            return response()->json([
+                'retcode' => 202,
+                'status' => true,
+                'msg' => 'Validation was successful, now you can reset your password',
+                'data' => [
+                    'email' => $checkCode->email
+                ],
+                'error' => 0
+            ], 202);
+
+        } catch (QueryException $e)
+        {
+            return response()->json([
+                'retcode' => 417,
+                'status' => false,
+                'msg' => 'Something was wrong !',
+                'error' => 1,
+                'error_detail' => $e
+            ], 417);
+        }
+    }
+
+    public function reset()
+    {
+        $validation = Validator::make(request()->all(), [
+            'email' => 'required',
+            'new_password' => 'required'
+        ]);
+
+        $json = [
+            'retcode' => 422,
+            'status' => false,
+            'msg' => 'Something was wrong !',
+            'error' => 1,
+            'error_detail' => $validation->errors()
+        ];
+
+        if ($validation->fails()) return response()->json($json, 422);
+
+        try {
+            $email = Str::upper(request()->email);
+            $new_password = Hash::make(request()->new_password);
+
+            $checkCode = PasswordReset::where('email', $email)->first();
+            if(empty($checkCode))
+            {
+                return response()->json([
+                    'retcode' => 404,
+                    'status' => false,
+                    'msg' => 'Token not found',
+                    'error' => 1
+                ], 404);
+            }
+
+            $one_days = date('Y-m-d H:i:s', strtotime('+1 days', strtotime($checkCode->created_at)));
+            $date = now();
+
+            if ($date > $one_days) {
+                return response()->json([
+                    'retcode' => 417,
+                    'status' => false,
+                    'msg' => 'The token has expired',
+                    'error' => 1
+                ], 417);
+            }
+
+            // Validate User //
+            $user = User::where('email', $email)->first();
+            if(empty($user))
+            {
+                return response()->json([
+                    'retcode' => 404,
+                    'status' => false,
+                    'msg' => 'User not found',
+                    'error' => 1
+                ], 404);
+            }
+
+            $user->update([
+                'password' => $new_password,
+                'updated_at' => now()
+            ]);
+
+            return response()->json([
+                'retcode' => 202,
+                'status' => true,
+                'msg' => 'Password changed successfully',
+                'error' => 0
+            ], 202);
+
+        } catch (QueryException $e)
+        {
+            return response()->json([
+                'retcode' => 417,
+                'status' => false,
+                'msg' => 'Something was wrong !',
+                'error' => 1,
+                'error_detail' => $e
+            ], 417);
+        }
+    }
+
     public function delete()
     {
         $validation = Validator::make(request()->all(), [

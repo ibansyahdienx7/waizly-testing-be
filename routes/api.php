@@ -39,7 +39,8 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::post('delete', [AuthController::class, 'delete']);
         Route::post('change-password', [AuthController::class, 'changePassword']);
         Route::post('forgot', [AuthController::class, 'forgot']);
-        Route::post('reset-password/{code}', [AuthController::class, 'forgot']);
+        Route::post('verify-password', [AuthController::class, 'checkCode']);
+        Route::post('reset-password', [AuthController::class, 'reset']);
     });
     // ========================================================= END API AUTH =============================================== //
 
