@@ -2,16 +2,10 @@
 
 namespace App\Traits;
 
-use App\Jobs\DataJobs;
-use App\Jobs\KecamatanJobs;
 use GuzzleHttp\Client;
-use App\Models\Api\Muser;
 use Illuminate\Support\Carbon;
-use App\Models\Api\Ayopos\CartPos;
 use Illuminate\Support\Facades\DB;
-use App\Models\Api\Ayopos\TotalPos;
 use Illuminate\Support\Facades\Http;
-use App\Models\Api\Ayopos\MerchantPos;
 use Stichoza\GoogleTranslate\GoogleTranslate;
 
 trait MyHelper
@@ -36,8 +30,7 @@ trait MyHelper
 
     public function url_app()
     {
-        // $url = "https://pesanin.com/";
-        $url = "http://127.0.0.1:8000/";
+        $url = "http://127.0.0.1:3199/";
         return $url;
     }
 
@@ -186,6 +179,7 @@ trait MyHelper
     public function timeAgo($timestamp)
     {
         $translate = new GoogleTranslate();
+
         $time_ago = strtotime($timestamp);
         $current_time = time();
         $time_difference = $current_time - $time_ago;
@@ -425,12 +419,5 @@ trait MyHelper
             $status = false;
         }
         return $status;
-    }
-
-    function alamatApi()
-    {
-        $base_url = 'https://api.hipesanin.com';
-
-        return $base_url;
     }
 }

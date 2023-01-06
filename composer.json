@@ -16,7 +16,7 @@
         "inertiajs/inertia-laravel": "^0.6.3",
         "intervention/image": "dev-master",
         "jenssegers/agent": "^2.6",
-        "joggapp/laravel-google-translate": "^8.1",
+        "joggapp/laravel-google-translate": "^9.0",
         "josiasmontag/laravel-recaptchav3": "^1.0",
         "laravel/framework": "^9.19",
         "laravel/jetstream": "^2.12",
@@ -32,11 +32,13 @@
         "psr/simple-cache": "2.0",
         "simplesoftwareio/simple-qrcode": "~4",
         "spatie/laravel-cookie-consent": "^3.2",
+        "statickidz/php-google-translate-free": "^1.2",
         "stichoza/google-translate-php": "^5.1",
         "tightenco/ziggy": "^1.0",
         "yajra/laravel-datatables-oracle": "~9.0"
     },
     "require-dev": {
+        "barryvdh/laravel-ide-helper": "^2.12",
         "fakerphp/faker": "^1.9.1",
         "laravel/breeze": "^1.17",
         "laravel/pint": "^1.0",

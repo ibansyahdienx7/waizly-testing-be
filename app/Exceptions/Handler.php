@@ -2,7 +2,10 @@
 
 namespace App\Exceptions;
 
+use Exception;
+use GuzzleHttp\Exception\RequestException;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
+use Illuminate\Session\TokenMismatchException;
 use Throwable;
 
 class Handler extends ExceptionHandler
@@ -22,7 +25,7 @@ class Handler extends ExceptionHandler
      * @var array<int, class-string<\Throwable>>
      */
     protected $dontReport = [
-        //
+        'Symfony\Component\HttpKernel\Exception\HttpException'
     ];
 
     /**
@@ -43,8 +46,26 @@ class Handler extends ExceptionHandler
      */
     public function register()
     {
-        $this->reportable(function (Throwable $e) {
-            //
+        $this->reportable(function (\Exception $e) {
+            return response()->json([
+                'retcode' => 500,
+                'status' => false,
+                'msg' => 'Something was wrong',
+                'error' => 1,
+                'error_detail' => $e
+            ], 500);
+        });
+
+        $this->renderable(function (\Exception $e) {
+            if ($e->getPrevious() instanceof TokenMismatchException) {
+                return response()->json([
+                    'retcode' => 401,
+                    'status' => false,
+                    'msg' => 'Unauthorized',
+                    'error' => 1,
+                    'error_detail' => $e
+                ], 401);
+            }
         });
     }
 }
