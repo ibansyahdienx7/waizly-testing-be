@@ -31,6 +31,7 @@
             transition: all .3s ease-in-out;
             margin-top: 40px;
             text-transform: capitalize;
+            cursor: pointer;
         }
 
         .btn-custom:hover{
@@ -52,6 +53,7 @@
             width: auto;
             text-align: center;
             transition: all .3s ease-in-out;
+            cursor: pointer;
         }
 
         .img-custom{
