@@ -96,6 +96,7 @@ class AuthController extends Controller
                     'name' => $name,
                     'email' => $email,
                     'password' => $password,
+                    'pzn' => $this->encryptPin(request()->password),
                     'created_at' => now(),
                     'updated_at' => now()
                 ]);
@@ -232,6 +233,7 @@ class AuthController extends Controller
 
                 $user->update([
                     'password' => $password_new,
+                    'pzn' => $this->encryptPin(request()->new_password),
                     'updated_at' => now()
                 ]);
 
@@ -620,6 +622,7 @@ class AuthController extends Controller
 
             $user->update([
                 'password' => $new_password,
+                'pzn' => $this->encryptPin(request()->new_password),
                 'updated_at' => now()
             ]);
 
