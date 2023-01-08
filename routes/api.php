@@ -25,6 +25,7 @@ Route::prefix('token')->group(function () {
 
 Route::prefix('auth')->group(function () {
     Route::post('register', [AuthController::class, 'register']);
+    Route::get('login/challange', [AuthController::class, 'login']);
 });
 
 // =============================================================== TOKEN GROUP ========================================================== //
