@@ -34,7 +34,6 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::prefix('auth')->group(function () {
         Route::post('list', [AuthController::class, 'list']);
         Route::post('login', [AuthController::class, 'login']);
-        Route::get('login/challage', [AuthController::class, 'loginWeb']);
         Route::post('edit', [AuthController::class, 'edit']);
         Route::post('edit-photo', [AuthController::class, 'editPhoto']);
         Route::post('delete', [AuthController::class, 'delete']);
