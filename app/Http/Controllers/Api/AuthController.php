@@ -9,6 +9,7 @@ use App\Models\Api\Team;
 use App\Models\User;
 use App\Traits\MyHelper;
 use Auth;
+use Carbon\Carbon;
 use File;
 use Hash;
 use Illuminate\Database\QueryException;
@@ -172,6 +173,71 @@ class AuthController extends Controller
                     'retcode' => 200,
                     'status' => true,
                     'msg' => 'Login successfully',
+                    'data' => Auth::user(),
+                    'error' => 0
+                ], 200);
+            }
+
+            return response()->json([
+                'retcode' => 404,
+                'status' => false,
+                'msg' => 'User not found!',
+                'error' => 1
+            ], 404);
+
+        } catch(QueryException $e)
+        {
+            return response()->json([
+                'retcode' => 417,
+                'status' => false,
+                'msg' => 'Something was wrong !',
+                'error' => 1,
+                'error_detail' => $e
+            ], 417);
+        }
+    }
+
+    public function loginWeb()
+    {
+        $validation = Validator::make(request()->all(), [
+            'email' => 'required|string|max:255',
+            'password' => 'required|string|min:5'
+        ]);
+
+        $json = [
+            'retcode' => 422,
+            'status' => false,
+            'msg' => 'Something was wrong !',
+            'error' => 1,
+            'error_detail' => $validation->errors()
+        ];
+
+        if ($validation->fails()) return response()->json($json, 422);
+
+        try {
+            $email = Str::lower(request()->email);
+            $password = request()->password;
+
+            $user = User::where('email', $email)->first();
+
+            if ($user) {
+                if (!Hash::check($password, $user->password)) {
+                    return response()->json([
+                        'retcode' => 406,
+                        'status' => false,
+                        'msg' => 'Password was wrong',
+                        'error' => 1
+                    ], 406);
+                }
+
+                $expired = Carbon::tomorrow();
+                $token = $user->createToken('auth_token', ['*'], $expired)->plainTextToken;
+
+                return response()->json([
+                    'retcode' => 200,
+                    'status' => true,
+                    'msg' => 'Login successfully',
+                    'token' => $token,
                     'data' => Auth::user(),
                     'error' => 0
                 ], 200);
